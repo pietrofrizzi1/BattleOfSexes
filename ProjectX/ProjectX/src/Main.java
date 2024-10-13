@@ -39,6 +39,10 @@ public class Main implements MouseListener {
     public static int islowmen;
     public static int islowwomen;
     public static int igesamt=ifastmen+ifastwomen+islowmen+islowwomen;
+    static float initialFastMen;
+    static float initialFastWomen ;
+    static float initialSlowMen ;
+    static float initialSlowWomen;
 
     public static int speed = 1;
     public static boolean allowed = false;
@@ -60,7 +64,7 @@ public class Main implements MouseListener {
     MyFrame frame = new MyFrame();
     JPanel map = new JPanel();
     JLabel city = new JLabel();
-    ImageIcon start = new ImageIcon("startmap.png");
+    ImageIcon start = new ImageIcon("/Users/pietro/Documents/GitHub/BattleOfSexes/ProjectX/ProjectX/src/cityImage.jpg");
     ImageIcon mapCity = new ImageIcon("ProjectX/ProjectX/src/citymap.gif");
     LowerPanel buttonPanel = new LowerPanel(frame, this);
     ZoePieChart pieChart = new ZoePieChart(gesamt,slowwomen,fastwomen,fastmen,slowmen, frame);
@@ -74,13 +78,15 @@ public class Main implements MouseListener {
 
         frame.setLayout(null);
         frame.setVisible(true);
-        frame.add(map);
-        frame.add(pieChart);
-        pieChart.setBounds(920,10,500,300);
+
         city.setBounds(10,10,880,880);
         city.setIcon(start);
         city.setVisible(true);
         frame.add(city);
+        frame.add(map);
+        frame.add(pieChart);
+        pieChart.setBounds(920,10,500,300);
+        
         frame.add(buttonPanel);
         map.setBounds(10,10,880,880);
         map.setOpaque(false);
@@ -117,21 +123,30 @@ public class Main implements MouseListener {
             timelord();
             movements=0;
         }
-        if (timepassed % 20 == 0){
-            int index = timepassed%100/20;
-            slowmena[index]= (float)slowmen/gesamt;
-            slowwomena[index] = (float)slowwomen/gesamt;
-            fastwomena[index]= (float)fastwomen/gesamt;
-            fastmena[index]= (float)fastmen/gesamt;
-            Populations.add(gesamt);
-
+        if (timepassed % 20 == 0) {
+            int index = timepassed % 100 / 20;
+            slowmena[index] = (float) slowmen / gesamt;
+            slowwomena[index] = (float) slowwomen / gesamt;
+            fastwomena[index] = (float) fastwomen / gesamt;
+            fastmena[index] = (float) fastmen / gesamt;
+        
+            // Check if the Populations list is empty or if the new value is different from the last one
+            if (Populations.isEmpty() || Populations.get(Populations.size() - 1) != gesamt) {
+                Populations.add(gesamt);
+                System.out.println("Added to Populations: " + gesamt);
+            }
+            
         }
+            
+
+        
         if (timepassed%100==0){
             //Populations.add(gesamt);
             refreshPieChart(gesamt,slowwomen, fastwomen, fastmen, slowmen, frame);
             //System.out.println(Populations);
         }
         if (timepassed>400){
+            
             if(timepassed%100==0) {
                 //System.out.print(Arrays.toString(fastmena));
                 cyclable();
@@ -199,7 +214,7 @@ public class Main implements MouseListener {
         for(int i=0; i<5; i++){
             summee+= Math.abs(arr[i]-mean);
         }
-        System.out.println((float) Math.sqrt(summee/5));
+        //System.out.println((float) Math.sqrt(summee/5));
         return (float) Math.sqrt(summee/5);
     }
     public void cyclable(){
@@ -288,11 +303,23 @@ public class Main implements MouseListener {
     }
     public void end(){
         allowed = false;
-        //System.out.println(population);
-        statsFrame statistics = new statsFrame(buttonPanel.population,this);
+        // Calculate percentages
+        float percentFastMen = (float) fastmen / gesamt * 100;
+        float percentFastWomen = (float) fastwomen / gesamt * 100;
+        float percentSlowMen = (float) slowmen / gesamt * 100;
+        float percentSlowWomen = (float) slowwomen / gesamt * 100;
+    
+        // Print the results
+        System.out.println("Final Population Breakdown:");
+        System.out.printf("Fast Men: %.2f%%\n", percentFastMen);
+        System.out.printf("Fast Women: %.2f%%\n", percentFastWomen);
+        System.out.printf("Slow Men: %.2f%%\n", percentSlowMen);
+        System.out.printf("Slow Women: %.2f%%\n", percentSlowWomen);
+        
+        // Display stats
+        statsFrame statistics = new statsFrame(buttonPanel.population, this);
         statistics.show();
-        city.setIcon(null);
-        //System.out.println("Congrats");
+        city.setIcon(start);
     }
 
     public float getbiggest(float[] x){
@@ -481,89 +508,94 @@ public class Main implements MouseListener {
 
 
 
-    public void initialize(int fm,int fw,int sm,int sw){
-        gesamt = fm + fw + sm + sw;
-        maxpop = (int) (gesamt * (1+maxgrowth));
-        clockTile clock=new clockTile(8,8,this);
-        Thread clkThread= new Thread(clock);
+    public void initialize(int fm, int fw, int sm, int sw){
+        gesamt = fm + fw + sm + sw; // total population
+        maxpop = (int) (gesamt * (1 + maxgrowth));
+    
+        // Calculate initial percentages
+        initialFastMen = (float) fm / gesamt * 100;
+        initialFastWomen = (float) fw / gesamt * 100;
+        initialSlowMen = (float) sm / gesamt * 100;
+        initialSlowWomen = (float) sw / gesamt * 100;
+    
+        // Print initial percentages
+        System.out.println("Initial Population Breakdown:");
+        System.out.printf("Fast Men: %.2f%%\n", initialFastMen);
+        System.out.printf("Fast Women: %.2f%%\n", initialFastWomen);
+        System.out.printf("Slow Men: %.2f%%\n", initialSlowMen);
+        System.out.printf("Slow Women: %.2f%%\n", initialSlowWomen);
+    
+        clockTile clock = new clockTile(8, 8, this);
+        Thread clkThread = new Thread(clock);
         clkThread.start();
-        clock.runningon=clkThread;
-
+        clock.runningon = clkThread;
+    
         for (int i = 0; i < fm; i++) {
-            Man m=new Man(0,0,this);
+            Man m = new Man(0, 0, this);
             m.birthday = rd.nextInt(400);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(true);
             g.add(true);
             g.add(true);
-            ArrayList<Boolean>gen=setDominant(g);
-            m.genes=gen;
-            //m.fast=true;
+            ArrayList<Boolean> gen = setDominant(g);
+            m.genes = gen;
             m.fenotipo();
             m.birthday = timepassed;
-            Thread thread=new Thread(m);
-            m.runningon=thread;
+            Thread thread = new Thread(m);
+            m.runningon = thread;
             m.runningon.start();
             Alive.add(m);
         }
         for (int i = 0; i < sm; i++) {
-            Man m=new Man(0,0,this);
+            Man m = new Man(0, 0, this);
             m.birthday = rd.nextInt(400);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(false);
             g.add(false);
             g.add(false);
-            ArrayList<Boolean>gen=setDominant(g);
-            m.genes=gen;
-           // m.fast=false;
+            ArrayList<Boolean> gen = setDominant(g);
+            m.genes = gen;
             m.fenotipo();
             m.birthday = timepassed;
-            Thread thread=new Thread(m);
-            m.runningon=thread;
+            Thread thread = new Thread(m);
+            m.runningon = thread;
             m.runningon.start();
             Alive.add(m);
-
         }
         for (int i = 0; i < fw; i++) {
-            Woman w=new Woman(width -1,height -1,this);
+            Woman w = new Woman(width - 1, height - 1, this);
             w.birthday = rd.nextInt(400);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(true);
             g.add(true);
             g.add(true);
-            ArrayList<Boolean>gen=setDominant(g);
-            w.genes=gen;
-           // w.fast=true;
+            ArrayList<Boolean> gen = setDominant(g);
+            w.genes = gen;
             w.fenotipo();
             w.birthday = timepassed;
-            Thread thread=new Thread(w);
-            w.runningon=thread;
+            Thread thread = new Thread(w);
+            w.runningon = thread;
             w.runningon.start();
             Alive.add(w);
-
-
         }
         for (int i = 0; i < sw; i++) {
-            Woman w=new Woman(width -1,height -1,this);
+            Woman w = new Woman(width - 1, height - 1, this);
             w.birthday = rd.nextInt(400);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(false);
             g.add(false);
             g.add(false);
-            ArrayList<Boolean>gen=setDominant(g);
-            w.genes=gen;
-            //w.fast=false;
+            ArrayList<Boolean> gen = setDominant(g);
+            w.genes = gen;
             w.fenotipo();
             w.birthday = timepassed;
-            Thread thread=new Thread(w);
-            w.runningon=thread;
+            Thread thread = new Thread(w);
+            w.runningon = thread;
             w.runningon.start();
             Alive.add(w);
-
-
         }
-        refreshPieChart(gesamt,slowwomen,fastwomen,fastmen,slowmen, frame);
-        //frame.repaint(); frame.revalidate();
+    
+        refreshPieChart(gesamt, slowwomen, fastwomen, fastmen, slowmen, frame);
     }
 
     public void meet(Tile t){
@@ -602,9 +634,7 @@ public class Main implements MouseListener {
             if (!first.single || !second.single || !first.running || !second.running){
                 return;
             }
-            if ((55 < first.getage() || first.getage() < 12) || (55 < second.getage() || second.getage()<12)){
-                return;
-            }
+           
             if(Compatibility(first.type(),second.type())){
                 gettogether(first, second);
             }
@@ -729,6 +759,7 @@ public class Main implements MouseListener {
     public void updatetype(Person p, boolean b){
         if(b){
             gesamt++;
+            //System.out.println(gesamt);
         if (p.getgender().equals("male")){
             if (p.type()) fastmen++;
             else slowmen++;
@@ -740,7 +771,8 @@ public class Main implements MouseListener {
         }
         else {
             gesamt --;
-            //System.out.println("hdhdhdhdh");
+            
+            //System.out.println(gesamt);
             if (p.getgender().equals("male")){
                 if (p.type()) fastmen--;
                 else slowmen--;
@@ -754,8 +786,11 @@ public class Main implements MouseListener {
     }
     public void God(Man parent1, Woman parent2, int x,int y){
         if (gesamt>maxpop){
+            //System.out.println("vero");
             return;
+           
         }
+        //System.out.println("falso");
         String[] gender={"male","female"};
         int k=(int)(Math.random()*2);
         if(gender[k].equals("male")){
@@ -805,7 +840,7 @@ public class Main implements MouseListener {
         //int x = two.meetingtile.coor_x;
         //int y = two.meetingtile.coor_y;
         int amount = randomNum/10;
-        System.out.println(amount);
+        //System.out.println(amount);
         for (int ja = 1;ja <amount; ja++){
             //System.out.println(amount +"new babies");
             God(one,two,x,y);

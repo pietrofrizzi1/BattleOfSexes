@@ -97,10 +97,20 @@ public class ZoePieChart extends JPanel {// draw rectangles and arcs
     }
     public float[] getPercentage(float tot, float a1, float a2, float a3, float a4) {
         float[] res = new float[4];
-        res[0] = (float)(a1/tot)*100;
-        res[1] = (float)(a2/tot)*100;
-        res[2] = (float)(a3/tot)*100;
-        res[3] = (float)(a4/tot)*100;
+    
+        // Calculate the percentages for a1, a2, and a3
+        res[0] = (float)(a1 / tot) * 100;
+        res[1] = (float)(a2 / tot) * 100;
+        res[2] = (float)(a3 / tot) * 100;
+    
+        // If all the first three percentages are 0, set the fourth to 0
+        if (a1 == 0 && a2 == 0 && a3 == 0) {
+            res[3] = 0;
+        } else {
+            // Otherwise, set the fourth percentage to be the remainder (1 - sum of the first three percentages)
+            res[3] = 100-res[0]-res[1]-res[2];
+        }
+    
         return res;
     }
 
@@ -109,24 +119,32 @@ public class ZoePieChart extends JPanel {// draw rectangles and arcs
         angle[0] = (int)((res[0]/100)*360);
         angle[1] = (int)((res[1]/100)*360);
         angle[2] = (int)((res[2]/100)*360);
-        angle[3] = (int)((res[3]/100)*360);
+        if (angle[0] == 0 && angle[2] == 0 && angle[1] == 0) {
+            res[3] = 0;
+        } else {
+          angle[3] = 360-angle[0]-angle[1]-angle[2];
+        }
         return angle;
     }
 
-    public void paintComponent(Graphics g){ //, int a1,int a2, int a3 ,int a4) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g); // call superclass's paintComponent
-        // start at 0 and sweep 360 degrees
-        g.setColor(new Color(0xFFEDEBDE));
-        g.drawRect(10, 20, 260, 260);
-        g.setColor(new Color(0xD58B40));
-        g.fillArc(10, 20, 260, 260, 0, 360);
+        
+        // Imposta il colore di sfondo a bianco e disegna l'intero cerchio bianco
+        g.setColor(Color.WHITE);
+        g.fillArc(10, 20, 260, 260, 0, 360); // Cerchio completo bianco
+    
+        // Disegna i settori del pie chart con i colori desiderati
+        g.setColor(new Color(0xD58B40));  // Primo colore (marrone chiaro)
         g.fillArc(10, 20, 260, 260, 0, angle[0]);
-        g.setColor(new Color(0xCE9E6E));
+    
+        g.setColor(new Color(0xCE9E6E));  // Secondo colore (arancione chiaro)
         g.fillArc(10, 20, 260, 260, angle[0], angle[1]);
-        g.setColor(new Color(0x238891));
-        g.fillArc(10, 20, 260, 260, angle[0]+angle[1], angle[2]);
-        g.setColor(new Color(0x83C5BF));
-        g.fillArc(10, 20, 260, 260, angle[0]+angle[1]+angle[2], angle[3]);
-
+    
+        g.setColor(new Color(0x238891));  // Terzo colore (azzurro)
+        g.fillArc(10, 20, 260, 260, angle[0] + angle[1], angle[2]);
+    
+        g.setColor(new Color(0x83C5BF));  // Quarto colore (azzurro chiaro)
+        g.fillArc(10, 20, 260, 260, angle[0] + angle[1] + angle[2], angle[3]);
     }
 }

@@ -72,7 +72,7 @@ public class clockTile implements Person{
                     runningon.sleep(Main.timespeed);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    System.out.println("rewfr");
+                    //System.out.println("rewfr");
                 }
                 frame.timemove(this);
                 //System.out.println("moving");

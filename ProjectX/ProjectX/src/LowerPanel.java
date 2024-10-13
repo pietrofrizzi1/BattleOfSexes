@@ -42,6 +42,7 @@ public class LowerPanel extends JPanel{
         stopButton.addActionListener(
                 e -> {startButton.setEnabled(true);
                     stopButton.setEnabled(false);
+                    
                     m.end();
                     statsFrame statistics = new statsFrame(population,m);
                     statistics.show();
