@@ -52,19 +52,19 @@ public class DominantGenePanel extends JPanel implements ActionListener {
         if(e.getSource()==slow){
             main.dominantgene=false;
             main.none=false;
-            System.out.println("slo");
+            
 
         }
         if(e.getSource()==fast){
             main.dominantgene=true;
             main.none=false;
-            System.out.println("fast");
+            
 
         }
         if(e.getSource()==none){
             main.dominantgene=false;
             main.none=true;
-            System.out.println("gfghjh");
+            
 
         }
 

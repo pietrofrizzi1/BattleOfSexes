@@ -532,7 +532,7 @@ public class Main implements MouseListener {
     
         for (int i = 0; i < fm; i++) {
             Man m = new Man(0, 0, this);
-            m.birthday = rd.nextInt(400);
+            m.birthday = rd.nextInt(20);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(true);
             g.add(true);
@@ -540,7 +540,8 @@ public class Main implements MouseListener {
             ArrayList<Boolean> gen = setDominant(g);
             m.genes = gen;
             m.fenotipo();
-            m.birthday = timepassed;
+            
+            System.out.println(m.birthday);
             Thread thread = new Thread(m);
             m.runningon = thread;
             m.runningon.start();
@@ -548,7 +549,7 @@ public class Main implements MouseListener {
         }
         for (int i = 0; i < sm; i++) {
             Man m = new Man(0, 0, this);
-            m.birthday = rd.nextInt(400);
+            m.birthday = rd.nextInt(20);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(false);
             g.add(false);
@@ -556,7 +557,7 @@ public class Main implements MouseListener {
             ArrayList<Boolean> gen = setDominant(g);
             m.genes = gen;
             m.fenotipo();
-            m.birthday = timepassed;
+            
             Thread thread = new Thread(m);
             m.runningon = thread;
             m.runningon.start();
@@ -564,7 +565,7 @@ public class Main implements MouseListener {
         }
         for (int i = 0; i < fw; i++) {
             Woman w = new Woman(width - 1, height - 1, this);
-            w.birthday = rd.nextInt(400);
+            w.birthday = rd.nextInt(20);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(true);
             g.add(true);
@@ -572,7 +573,7 @@ public class Main implements MouseListener {
             ArrayList<Boolean> gen = setDominant(g);
             w.genes = gen;
             w.fenotipo();
-            w.birthday = timepassed;
+            
             Thread thread = new Thread(w);
             w.runningon = thread;
             w.runningon.start();
@@ -580,7 +581,7 @@ public class Main implements MouseListener {
         }
         for (int i = 0; i < sw; i++) {
             Woman w = new Woman(width - 1, height - 1, this);
-            w.birthday = rd.nextInt(400);
+            w.birthday = rd.nextInt(20);
             ArrayList<Boolean> g = new ArrayList<>();
             g.add(false);
             g.add(false);
@@ -588,7 +589,7 @@ public class Main implements MouseListener {
             ArrayList<Boolean> gen = setDominant(g);
             w.genes = gen;
             w.fenotipo();
-            w.birthday = timepassed;
+            
             Thread thread = new Thread(w);
             w.runningon = thread;
             w.runningon.start();
@@ -827,21 +828,17 @@ public class Main implements MouseListener {
 
 
     public void makebabies(Man one, Woman two) {
-        int min;
-        if (a>20){
-            min = a-20;
-        }
-        else{
-            min = 0;
-        }
-        int randomNum = ThreadLocalRandom.current().nextInt(min, a);
+        
+        
+        int randomNum = ThreadLocalRandom.current().nextInt(0, a);
+        
         int x = 0;
         int y = 0;
         //int x = two.meetingtile.coor_x;
         //int y = two.meetingtile.coor_y;
         int amount = randomNum/10;
         //System.out.println(amount);
-        for (int ja = 1;ja <amount; ja++){
+        for (int ja = 0;ja <amount; ja++){
             //System.out.println(amount +"new babies");
             God(one,two,x,y);
         }
